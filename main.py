@@ -212,7 +212,7 @@ def main():
                 pygame.quit()
                 quit()
 
-        userInput = pygame.key.get_pressed()
+        userInput = pygame.key.get_pressed(K_SPACE)
         player.update(userInput)
 
         if len(obstacles) == 0:
@@ -269,12 +269,13 @@ def menu(death_count):
         SCREEN.blit(DYING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
         pygame.display.update()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                main()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                 pygame.quit()
+        quit()
+    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        main()
+
 
 
 menu(death_count=0)
