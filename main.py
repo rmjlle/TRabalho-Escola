@@ -14,26 +14,30 @@ pygame.display.set_caption("Dino Game Modificado")
 WHITE = (255, 255, 255)
 
 # Carregamento e redimensionamento das imagens
+# Carregamento e redimensionamento das imagens
 BG = pygame.image.load(os.path.join("Assets/Other", "RUA 8.png"))
 BG = pygame.transform.scale(BG, (SCREEN_WIDTH * 15, SCREEN_HEIGHT))
 
-RUNNING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "KartMax1.png")), (75, 46)),
-           pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "KartMax2.png")), (75, 46))]
-JUMPING = pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXJUMP.png")), (76, 67))
-DUCKING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXDUCK.png")), (76, 41)),
-           pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXDUCK.png")), (76, 41))]
-DYING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "DeadMax.png")), (80, 37))]
+# Aumentando o tamanho do dinossauro e dos obstáculos em 30%
+RUNNING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "KartMax1.png")), (98, 60)),
+           pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "KartMax2.png")), (98, 60))]
+JUMPING = pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXJUMP.png")), (99, 87))
+DUCKING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXDUCK.png")), (99, 53)),
+           pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "MAXDUCK.png")), (99, 53))]
+DYING = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Dino", "DeadMax.png")), (104, 48))]
 
-SMALL_CACTUS = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Cactus", "Lixo.png")), (46, 80))]
-LARGE_CACTUS = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Cactus", "penus.png")), (47, 59))]
-BIRD = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Bird", "Bird1 Modificado.png")), (93, 62)),
-        pygame.transform.scale(pygame.image.load(os.path.join("Assets/Bird", "Bird2.png")), (93, 62))]
+# Aumentando o tamanho dos obstáculos em 30%
+SMALL_CACTUS = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Cactus", "Lixo.png")), (60, 104))]
+LARGE_CACTUS = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Cactus", "penus.png")), (61, 77))]
+BIRD = [pygame.transform.scale(pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")), (236/2, 236/2)),
+        pygame.transform.scale(pygame.image.load(os.path.join("Assets/Bird", "Bird1.png")), (236/2, 236/2))]
+
 
 # Classe do Dinossauro
 class Dinosaur:
     X_POS = 0
-    Y_POS = 700
-    Y_POS_DUCK = 730
+    Y_POS = 693
+    Y_POS_DUCK = 700
     Y_POS_DEAD = 730
     JUMP_VEL = 8.5
 
@@ -132,10 +136,8 @@ class Obstacle:
         SCREEN.blit(self.image[self.type], self.rect)
 
     def check_proximity(self, dino):
-        # Checa se o dinossauro está colidindo ou a menos de 5 pixels do obstáculo
-        if abs(self.rect.x - dino.dino_rect.x) <= 5 and abs(self.rect.y - dino.dino_rect.y) <= 5:
-            return True
-        return False
+    # Checa se o retângulo do obstáculo colide com o retângulo do dinossauro
+        return self.rect.colliderect(dino.dino_rect)
 
 
 class SmallCactus(Obstacle):
@@ -156,14 +158,28 @@ class Bird(Obstacle):
     def __init__(self, image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = random.choice([200, 250, 300])
-        self.index = 680
+        
+        # Define a posição y do pássaro de forma fixa ou aleatória acima de 689 pixels
+        self.rect.y = random.choice([570, 550, 560])  # Alturas altas o suficiente para passar por cima do dinossauro agachado
+        self.index = 0
+        self.rotation_angle = 0  # Ângulo inicial de rotação
 
-    def draw(self, SCREEN):
-        if self.index >= 9:
+    def draw(self, SCREEN): 
+        # Incrementa o ângulo de rotação a cada frame
+        self.rotation_angle = (self.rotation_angle + 1) % 360  # Gira um grau a cada frame, reseta a 0 após 360 graus
+        
+        # Alterna entre as imagens do pássaro para animação e aplica rotação
+        current_image = self.image[self.index // 5]
+        rotated_image = pygame.transform.rotate(current_image, self.rotation_angle)
+        rotated_rect = rotated_image.get_rect(center=self.rect.center)  # Centraliza a rotação
+        
+        # Exibe a imagem rotacionada na tela
+        SCREEN.blit(rotated_image, rotated_rect)
+        
+        # Atualiza o índice para a animação do pássaro
+        self.index += 1
+        if self.index >= 10:
             self.index = 0
-        SCREEN.blit(self.image[self.index // 5], self.rect)
-        self.index += 671
 
 
 # Função Principal do Jogo
@@ -172,7 +188,7 @@ def main():
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
-    game_speed = 30
+    game_speed = 30  # Velocidade inicial
     x_pos_bg = -100
     y_pos_bg = 0 
     points = 0
@@ -206,7 +222,7 @@ def main():
                 obstacles.append(LargeCactus(LARGE_CACTUS))
             elif random.randint(0, 2) == 2:
                 obstacles.append(Bird(BIRD))
-
+        
         for obstacle in obstacles:
             obstacle.update()
             obstacle.draw(SCREEN)
@@ -217,13 +233,18 @@ def main():
 
         player.draw(SCREEN)
 
+        # Atualiza os pontos e aumenta a velocidade do jogo
         points = (pygame.time.get_ticks() - start_time) // 100
+        if points % 100 == 0 and points != 0:  # Aumenta a velocidade a cada 100 pontos
+            game_speed += 1
+
         font = pygame.font.Font('freesansbold.ttf', 20)
         text = font.render(f"Pontos: {points}", True, (0, 0, 0))
         SCREEN.blit(text, (900, 50))
 
         clock.tick(30)
         pygame.display.update()
+
 
 # Função para exibir o Menu
 def menu(death_count):
@@ -237,7 +258,7 @@ def menu(death_count):
             text = font.render("Pressione qualquer tecla para iniciar", True, (0, 0, 0))
         else:
             text = font.render("If my moomma had balls, she would have been my dad", True, (0, 0, 0))
-            score = font.render(f"Teus Pontos: {points}", True, (0, 0, 0))
+            score = font.render("Teus Pontos: {points}", True, (0, 0, 0))
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
             SCREEN.blit(score, scoreRect)
