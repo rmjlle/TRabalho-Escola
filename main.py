@@ -15,7 +15,7 @@ WHITE = (255, 255, 255)
 
 # Carregamento e redimensionamento das imagens
 # Carregamento e redimensionamento das imagens
-BG = pygame.image.load(os.path.join("Assets/Other", "RUA 8.png"))
+BG = pygame.image.load(os.path.join("Assets/Other", "RUA 9.png"))
 BG = pygame.transform.scale(BG, (SCREEN_WIDTH * 15, SCREEN_HEIGHT))
 
 # Aumentando o tamanho do dinossauro e dos obstáculos em 30%
@@ -238,9 +238,9 @@ def main():
         if points % 100 == 0 and points != 0:  # Aumenta a velocidade a cada 100 pontos
             game_speed += 1
 
-        font = pygame.font.Font('freesansbold.ttf', 20)
+        font = pygame.font.Font('freesansbold.ttf', 30)
         text = font.render(f"Pontos: {points}", True, (0, 0, 0))
-        SCREEN.blit(text, (900, 50))
+        SCREEN.blit(text, (1300, 50))
 
         clock.tick(30)
         pygame.display.update()
@@ -255,9 +255,9 @@ def menu(death_count):
         font = pygame.font.Font('freesansbold.ttf', 30)
 
         if death_count == 0:
-            text = font.render("Pressione qualquer tecla para iniciar", True, (0, 0, 0))
+            text = font.render("If my momma had balls, she'd be my dad", True, (0, 0, 0))
         else:
-            text = font.render("If my moomma had balls, she would have been my dad", True, (0, 0, 0))
+            text = font.render("If my momma had balls, she would have been my dad", True, (0, 0, 0))
             score = font.render("Teus Pontos: {points}", True, (0, 0, 0))
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
@@ -266,7 +266,7 @@ def menu(death_count):
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+        SCREEN.blit(DYING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
         pygame.display.update()
 
         for event in pygame.event.get():
