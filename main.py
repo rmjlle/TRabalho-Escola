@@ -15,7 +15,7 @@ WHITE = (255, 255, 255)
 
 # Carregamento e redimensionamento das imagens
 # Carregamento e redimensionamento das imagens
-BG = pygame.image.load(os.path.join("Assets/Other", "RUA 8.png"))
+BG = pygame.image.load(os.path.join("Assets/Other", "RUA 9.png"))
 BG = pygame.transform.scale(BG, (SCREEN_WIDTH * 15, SCREEN_HEIGHT))
 
 # Aumentando o tamanho do dinossauro e dos obstáculos em 30%
